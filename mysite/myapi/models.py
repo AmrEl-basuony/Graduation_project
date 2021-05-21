@@ -10,10 +10,10 @@ class Employee(models.Model):
     last_name = models.CharField(max_length=256)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=256)
-    image = models.ImageField()
-    summary = models.CharField(max_length=256)
-    address = models.CharField(max_length=256)
-    languages = CountryField(multiple=True)
+    image = models.ImageField(null=True)
+    summary = models.CharField(max_length=256, null=True)
+    address = models.CharField(max_length=256, null=True)
+    languages = CountryField(multiple=True,)
     AVAILABILITY = [
         (True,  'Available'),
         (False, 'Not available'),
@@ -29,12 +29,12 @@ class Employee(models.Model):
         (False, 'Single'),
     ]
     marital_status = models.BooleanField(choices=MARITAL_STATUS,default=True)
-    phone = models.IntegerField()
-    country = CountryField()
-    city = models.CharField(max_length=256)
-    cv = models.FileField()
-    nationality = CountryField()
-    birthday = models.DateField()
+    phone = models.IntegerField(null=True)
+    country = CountryField(null=True)
+    city = models.CharField(max_length=256, null=True)
+    cv = models.FileField(null=True)
+    nationality = CountryField(null=True)
+    birthday = models.DateField(null=True)
     FULL_TIME = 'FU'
     PART_TIME = 'PA'
     FREELANCE = 'FR'
@@ -49,9 +49,7 @@ class Employee(models.Model):
         (TRAINING, 'Training'),
         (FLEXIBLE_WORK, 'Flexible work'),
     ]
-    employment = models.CharField(max_length=2, choices=EMPLOYMENT,)
-    def __str__(self):
-        return self.first_name
+    employment = models.CharField(max_length=2, choices=EMPLOYMENT,default=FULL_TIME)
 
 class Course(models.Model):
     hours = models.IntegerField() 
@@ -84,15 +82,15 @@ class Experience(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=256,)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=256)
-    image = models.ImageField()
-    summary = models.CharField(max_length=256)
-    address = models.CharField(max_length=256)
-    phone_code = models.CharField(max_length=256)
-    phone = models.IntegerField()
-    founding_date = models.DateField()
-    website = models.CharField(max_length=256)
+    image = models.ImageField(null=True)
+    summary = models.CharField(max_length=256,null=True)
+    address = models.CharField(max_length=256,null=True)
+    phone_code = models.CharField(max_length=256,null=True)
+    phone = models.IntegerField(null=True)
+    founding_date = models.DateField(null=True)
+    website = models.CharField(max_length=256,null=True)
     FULL_TIME = 'FU'
     PART_TIME = 'PA'
     FREELANCE = 'FR'
@@ -107,13 +105,13 @@ class Organization(models.Model):
         (TRAINING, 'Training'),
         (FLEXIBLE_WORK, 'Flexible work'),
     ]
-    employment = models.CharField(max_length=2, choices=EMPLOYMENT,)
+    employment = models.CharField(max_length=2, choices=EMPLOYMENT,default=FULL_TIME)
 
 class SocialLink(models.Model):
-    facebook = models.CharField(max_length=256,)
-    linkedin = models.CharField(max_length=256,)
-    twitter = models.CharField(max_length=256,)
-    instagram = models.CharField(max_length=256,)
+    facebook = models.CharField(max_length=256,null=True)
+    linkedin = models.CharField(max_length=256,null=True)
+    twitter = models.CharField(max_length=256,null=True)
+    instagram = models.CharField(max_length=256,null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
 
 #Application and its related models
@@ -121,14 +119,14 @@ class SocialLink(models.Model):
 class Application(models.Model):
     name = models.CharField(max_length=256,)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    age_preference = InclusiveIntegerRangeField()
+    age_preference = InclusiveIntegerRangeField(null=True)
     role = models.CharField(max_length=256)
     job_title = models.CharField(max_length=256)
     keyword = models.CharField(max_length=256)
     phone = models.IntegerField()
     start = models.DateField()
     end = models.DateField()
-    salary_range = InclusiveIntegerRangeField()
+    salary_range = InclusiveIntegerRangeField(null=True)
     vacant_position = models.CharField(max_length=256)
     AVAILABILITY = [
         (True,  'Available'),
@@ -169,7 +167,7 @@ class Test(models.Model):
 class Question(models.Model):
     category = models.CharField(max_length=256,)
     question = models.CharField(max_length=256,)
-    answer = models.JSONField()
+    answer = models.JSONField(null=True)
     time  = models.TimeField()
     grade  = models.DecimalField(max_digits=10, decimal_places=5)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
