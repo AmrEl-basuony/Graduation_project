@@ -52,31 +52,31 @@ class Employee(models.Model):
     employment = models.CharField(max_length=2, choices=EMPLOYMENT,default=FULL_TIME)
 
 class Course(models.Model):
-    hours = models.IntegerField() 
-    name = models.CharField(max_length=256,)
-    issuing_date = models.DateField()
-    description = models.CharField(max_length=256,)
-    institute = models.CharField(max_length=256,)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    hours = models.IntegerField(null=True) 
+    name = models.CharField(max_length=256,null=True)
+    issuing_date = models.DateField(null=True)
+    description = models.CharField(max_length=256,null=True)
+    institute = models.CharField(max_length=256,null=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)
 
 class Experience(models.Model):
-    industry_name = models.CharField(max_length=256,)
-    summary = models.CharField(max_length=256,)
-    start_date = models.DateField()	
-    country = CountryField()
-    salary = models.IntegerField() 
+    industry_name = models.CharField(max_length=256,null=True)
+    summary = models.CharField(max_length=256,null=True)
+    start_date = models.DateField(null=True)	
+    country = CountryField(null=True)
+    salary = models.IntegerField(null=True) 
     SALARY_RATE = [
             ('D', 'Daily'),
             ('W', 'Weekly'),
             ('M', 'Monthly'),
             ('Y', 'Yearly'),
         ]
-    salary_rate = models.CharField(max_length=1,choices=SALARY_RATE,) 
-    curruncy = models.CharField(max_length=256,)
-    job_title = models.CharField(max_length=256,)
-    company = models.CharField(max_length=256,)
-    months_of_experience = models.IntegerField()
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)    
+    salary_rate = models.CharField(max_length=1,choices=SALARY_RATE,default='M') 
+    curruncy = models.CharField(max_length=256,null=True)
+    job_title = models.CharField(max_length=256,null=True)
+    company = models.CharField(max_length=256,null=True)
+    months_of_experience = models.IntegerField(null=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)    
 
 #Organization and its related models
 
@@ -120,28 +120,28 @@ class Application(models.Model):
     name = models.CharField(max_length=256,)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     age_preference = InclusiveIntegerRangeField(null=True)
-    role = models.CharField(max_length=256)
-    job_title = models.CharField(max_length=256)
-    keyword = models.CharField(max_length=256)
-    phone = models.IntegerField()
-    start = models.DateField()
-    end = models.DateField()
-    salary_range = InclusiveIntegerRangeField(null=True)
-    vacant_position = models.CharField(max_length=256)
+    role = models.CharField(max_length=256,null=True)
+    job_title = models.CharField(max_length=256,null=True)
+    keyword = models.CharField(max_length=256,null=True)
+    phone = models.IntegerField(null=True)
+    start = models.DateField(null=True)
+    end = models.DateField(null=True)
+    salary_range = InclusiveIntegerRangeField(null=True,)
+    vacant_position = models.CharField(max_length=256,null=True)
     AVAILABILITY = [
         (True,  'Available'),
         (False, 'Not available'),
     ]
     availability = models.BooleanField(choices=AVAILABILITY,default=True)
     languages = CountryField(multiple=True)
-    months_of_experience = models.DecimalField(max_digits=10, decimal_places=5)
-    description = models.CharField(max_length=256)
+    months_of_experience = models.DecimalField(max_digits=10, decimal_places=5,null=True)
+    description = models.CharField(max_length=256,null=True)
     GENDER_PREFERENCE = [
         ('MALE', 'Male'),
         ('FEMALE', 'Female'),
         ('ANY', 'Any'),
     ]
-    gender_preference = models.CharField(max_length=6, choices=GENDER_PREFERENCE,)
+    gender_preference = models.CharField(max_length=6, choices=GENDER_PREFERENCE,default=True)
     FULL_TIME = 'FU'
     PART_TIME = 'PA'
     FREELANCE = 'FR'
@@ -156,20 +156,20 @@ class Application(models.Model):
         (TRAINING, 'Training'),
         (FLEXIBLE_WORK, 'Flexible work'),
     ]
-    employment = models.CharField(max_length=2, choices=EMPLOYMENT,)
+    employment = models.CharField(max_length=2, choices=EMPLOYMENT,default=FULL_TIME)
 
 class Test(models.Model):
-    category = models.CharField(max_length=256,)
+    category = models.CharField(max_length=256,null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    end = models.DateTimeField()
+    end = models.DateTimeField(null=True)
     participants = models.ManyToManyField(Employee,)
 
 class Question(models.Model):
-    category = models.CharField(max_length=256,)
-    question = models.CharField(max_length=256,)
+    category = models.CharField(max_length=256,null=True)
+    question = models.CharField(max_length=256,null=True)
     answer = models.JSONField(null=True)
-    time  = models.TimeField()
-    grade  = models.DecimalField(max_digits=10, decimal_places=5)
+    time  = models.TimeField(null=True)
+    grade  = models.DecimalField(max_digits=10, decimal_places=5,null=True)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
 
 #For multi models
@@ -181,9 +181,9 @@ class ProfessionalSkill(models.Model):
             ('MH', 'Mid-high'),
             ('HI', 'High'),
         ]
-    level = models.CharField(max_length=2,choices=LEVEL,) 
-    name = models.CharField(max_length=256,)
-    category = models.CharField(max_length=256,)
+    level = models.CharField(max_length=2,choices=LEVEL,default='LO') 
+    name = models.CharField(max_length=256,null=True)
+    category = models.CharField(max_length=256,null=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True)
     application = models.ForeignKey(Application, on_delete=models.CASCADE ,null=True)
 
@@ -193,16 +193,16 @@ class Education(models.Model):
             ('ML', 'Master\'s degree'),
             ('MI', 'Doctoral degree'),
         ]
-    level = models.CharField(max_length=2,choices=LEVEL,) 
+    level = models.CharField(max_length=2,choices=LEVEL,default='LO') 
     GRADUATION_STATUS = [
         (True,  'Graduated'),
         (False, 'Not graduated'),
     ]
     graduation_status = models.BooleanField(choices=GRADUATION_STATUS,default=True)
-    major = models.CharField(max_length=256,)
-    university = models.CharField(max_length=256,)
-    country = CountryField()
-    start = models.DateField()
-    end = models.DateField()
+    major = models.CharField(max_length=256,null=True)
+    university = models.CharField(max_length=256,null=True)
+    country = CountryField(null=True)
+    start = models.DateField(null=True)
+    end = models.DateField(null=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True)
     application = models.ForeignKey(Application, on_delete=models.CASCADE ,null=True)
