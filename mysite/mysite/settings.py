@@ -34,7 +34,7 @@ INSTALLED_APPS = [
 	#Added apps
 	'myapi.apps.MyapiConfig',
 	'rest_framework',
-	'django_countries',
+    'django_filters',
 	#End added apps
     'django.contrib.admin',
     'django.contrib.auth',

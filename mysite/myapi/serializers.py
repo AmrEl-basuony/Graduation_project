@@ -1,7 +1,10 @@
 from rest_framework import serializers
-from .models import Employee, ProfessionalSkill, Education, Course, Experience, Organization, SocialLink, Application, Test, Question
+from .models import Employee, ProfessionalSkill, Education, Course, Experience, Organization, SocialLink, Application, Test, Question, QuestionGrade, Appointment
 
-
+class AppointmentSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model = Appointment
+		fields =('date','availability','organization','employee')
 
 class ProfessionalSkillSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
@@ -12,7 +15,7 @@ class EducationSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Education
 		fields = ('level','graduation_status','major',
-			'university','country','start','end','employee','application')
+			'university','start','end','employee','application')
 
 class CourseSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
@@ -23,22 +26,23 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
 class ExperienceSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Experience
-		fields = ('industry_name','summary','start_date','country','salary','salary_rate',
+		fields = ('industry_name','summary','start_date','salary','salary_rate',
 			'curruncy','job_title','company','months_of_experience','employee')
 
 class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
+	Appointments = AppointmentSerializer(required=False,many=True)
 	ProfessionalSkills = ProfessionalSkillSerializer(required=False,many=True)
 	Education = EducationSerializer(required=False,many=True)
 	Courses = CourseSerializer(required=False,many=True)
 	Experiences = ExperienceSerializer(required=False,many=True)
 	class Meta:
 		model = Employee
-		fields = ('id', 'first_name', 'middle_name', 'last_name',
+		fields = ('id','first_name', 'middle_name', 'last_name',
 			'email','password','summary','address','gender',
-			'marital_status','phone','country','city',
-			'cv','nationality','birthday','employment',
+			'marital_status','phone','city',
+			'cv','birthday','employment',
 			'image','availability','ProfessionalSkills','Education',
-			'Courses','Experiences')
+			'Courses','Experiences','Appointments')
 
 class SocialLinkSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
@@ -52,7 +56,7 @@ class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
 		model = Application
 		fields =('id','name','organization',
 				'age_preference','role','job_title','keyword','phone','start',
-				'end','salary_range','vacant_position','availability','languages',
+				'end','salary_range','vacant_position','availability',
 				'months_of_experience','description','gender_preference','employment',
 				'ProfessionalSkills','Education')
 
@@ -67,13 +71,19 @@ class TestSerializer(serializers.HyperlinkedModelSerializer):
 		model = Test
 		fields =('category','organization','end','participants', 'Questions')
 
+class QuestionGradeSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model = QuestionGrade
+		fields =('grade','question','participant')
+
 class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
+	Appointments = AppointmentSerializer(required=False,many=True)
 	SocialLinks = SocialLinkSerializer(required=False,many=True)
 	Applications = ApplicationSerializer(required=False,many=True)
 	Tests = TestSerializer(required=False,many=True)
 	class Meta:
 		model = Organization
-		fields =('id','name','email','password',
+		fields =('name','email','password',
 				'image','summary','address','phone_code',
 				'phone','founding_date','website','employment',
-				'SocialLinks','Applications','Tests')
+				'SocialLinks','Applications','Tests','Appointments')

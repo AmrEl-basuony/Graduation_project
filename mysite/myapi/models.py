@@ -1,5 +1,4 @@
 from django.db import models
-from django_countries.fields import CountryField
 from inclusive_django_range_fields import InclusiveIntegerRangeField
 
 # Create your models here.
@@ -8,12 +7,11 @@ class Employee(models.Model):
     first_name = models.CharField(max_length=256,)
     middle_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True,)
     password = models.CharField(max_length=256)
     image = models.ImageField(null=True)
     summary = models.CharField(max_length=256, null=True)
     address = models.CharField(max_length=256, null=True)
-    languages = CountryField(multiple=True,)
     AVAILABILITY = [
         (True,  'Available'),
         (False, 'Not available'),
@@ -29,11 +27,9 @@ class Employee(models.Model):
         (False, 'Single'),
     ]
     marital_status = models.BooleanField(choices=MARITAL_STATUS,default=True)
-    phone = models.IntegerField(null=True)
-    country = CountryField(null=True)
+    phone = models.CharField(max_length=256,null=True)
     city = models.CharField(max_length=256, null=True)
     cv = models.FileField(null=True)
-    nationality = CountryField(null=True)
     birthday = models.DateField(null=True)
     FULL_TIME = 'FU'
     PART_TIME = 'PA'
@@ -57,13 +53,12 @@ class Course(models.Model):
     issuing_date = models.DateField(null=True)
     description = models.CharField(max_length=256,null=True)
     institute = models.CharField(max_length=256,null=True)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)
+    employee = models.ForeignKey(Employee, to_field='email',on_delete=models.CASCADE,null=True)
 
 class Experience(models.Model):
     industry_name = models.CharField(max_length=256,null=True)
     summary = models.CharField(max_length=256,null=True)
     start_date = models.DateField(null=True)	
-    country = CountryField(null=True)
     salary = models.IntegerField(null=True) 
     SALARY_RATE = [
             ('D', 'Daily'),
@@ -76,19 +71,19 @@ class Experience(models.Model):
     job_title = models.CharField(max_length=256,null=True)
     company = models.CharField(max_length=256,null=True)
     months_of_experience = models.IntegerField(null=True)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)    
+    employee = models.ForeignKey(Employee, to_field='email',on_delete=models.CASCADE,null=True)    
 
 #Organization and its related models
 
 class Organization(models.Model):
     name = models.CharField(max_length=256,)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True,)
     password = models.CharField(max_length=256)
     image = models.ImageField(null=True)
     summary = models.CharField(max_length=256,null=True)
     address = models.CharField(max_length=256,null=True)
     phone_code = models.CharField(max_length=256,null=True)
-    phone = models.IntegerField(null=True)
+    phone = models.CharField(max_length=256,null=True)
     founding_date = models.DateField(null=True)
     website = models.CharField(max_length=256,null=True)
     FULL_TIME = 'FU'
@@ -112,18 +107,18 @@ class SocialLink(models.Model):
     linkedin = models.CharField(max_length=256,null=True)
     twitter = models.CharField(max_length=256,null=True)
     instagram = models.CharField(max_length=256,null=True)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization,to_field='email', on_delete=models.CASCADE,null=True)
 
 #Application and its related models
 
 class Application(models.Model):
     name = models.CharField(max_length=256,)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization,to_field='email', on_delete=models.CASCADE,null=True)
     age_preference = InclusiveIntegerRangeField(null=True)
     role = models.CharField(max_length=256,null=True)
     job_title = models.CharField(max_length=256,null=True)
     keyword = models.CharField(max_length=256,null=True)
-    phone = models.IntegerField(null=True)
+    phone = models.CharField(max_length=256,null=True)
     start = models.DateField(null=True)
     end = models.DateField(null=True)
     salary_range = InclusiveIntegerRangeField(null=True,)
@@ -133,7 +128,6 @@ class Application(models.Model):
         (False, 'Not available'),
     ]
     availability = models.BooleanField(choices=AVAILABILITY,default=True)
-    languages = CountryField(multiple=True)
     months_of_experience = models.DecimalField(max_digits=10, decimal_places=5,null=True)
     description = models.CharField(max_length=256,null=True)
     GENDER_PREFERENCE = [
@@ -160,7 +154,7 @@ class Application(models.Model):
 
 class Test(models.Model):
     category = models.CharField(max_length=256,null=True)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization,to_field='email', on_delete=models.CASCADE,null=True)
     end = models.DateTimeField(null=True)
     participants = models.ManyToManyField(Employee,)
 
@@ -170,7 +164,22 @@ class Question(models.Model):
     answer = models.JSONField(null=True)
     time  = models.TimeField(null=True)
     grade  = models.DecimalField(max_digits=10, decimal_places=5,null=True)
-    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE,null=True)
+
+class QuestionGrade(models.Model):
+    grade  = models.DecimalField(max_digits=10, decimal_places=5,null=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE,null=True)
+    participant = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)
+
+class Appointment(models.Model):
+    date  = models.DateField(null=True)
+    AVAILABILITY = [
+        (True,  'Available'),
+        (False, 'Not available'),
+    ]
+    availability = models.BooleanField(choices=AVAILABILITY,default=True)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,null=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)
 
 #For multi models
 class ProfessionalSkill(models.Model):
@@ -184,7 +193,7 @@ class ProfessionalSkill(models.Model):
     level = models.CharField(max_length=2,choices=LEVEL,default='LO') 
     name = models.CharField(max_length=256,null=True)
     category = models.CharField(max_length=256,null=True)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True)
+    employee = models.ForeignKey(Employee,to_field='email', on_delete=models.CASCADE, null=True)
     application = models.ForeignKey(Application, on_delete=models.CASCADE ,null=True)
 
 class Education(models.Model):
@@ -198,11 +207,10 @@ class Education(models.Model):
         (True,  'Graduated'),
         (False, 'Not graduated'),
     ]
-    graduation_status = models.BooleanField(choices=GRADUATION_STATUS,default=True)
+    graduation_status = models.BooleanField(choices=GRADUATION_STATUS,default=True,null=True)
     major = models.CharField(max_length=256,null=True)
     university = models.CharField(max_length=256,null=True)
-    country = CountryField(null=True)
     start = models.DateField(null=True)
     end = models.DateField(null=True)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True)
+    employee = models.ForeignKey(Employee,to_field='email', on_delete=models.CASCADE, null=True)
     application = models.ForeignKey(Application, on_delete=models.CASCADE ,null=True)

@@ -13,6 +13,9 @@ router.register(r'socialLink', views.SocialLinkViewSet)
 router.register(r'application', views.ApplicationViewSet)
 router.register(r'test', views.TestViewSet)
 router.register(r'question', views.QuestionViewSet)
+router.register(r'questionGrade', views.QuestionGradeViewSet)
+router.register(r'appointment', views.AppointmentViewSet)
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
