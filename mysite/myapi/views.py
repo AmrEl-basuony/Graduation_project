@@ -44,7 +44,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganizationSerializer
     filter_backends=(DjangoFilterBackend,)
     filter_fields=('name','email','password',
-				'image','summary','address','phone_code',
+				'summary','address','phone_code',
 				'phone','founding_date','website','employment')
 
 class SocialLinkViewSet(viewsets.ModelViewSet):
@@ -58,9 +58,9 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = ApplicationSerializer
     filter_backends=(DjangoFilterBackend,)
     filter_fields=('id','name','organization',
-				'age_preference','role','job_title','keyword','phone','start',
-				'end','salary_range','vacant_position','availability',
-				'months_of_experience','description','gender_preference','employment')
+				'role','job_title','keyword','phone','start',
+				'end','vacant_position','availability',
+				'months_of_experience','description','employment')
 
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all().order_by('organization')

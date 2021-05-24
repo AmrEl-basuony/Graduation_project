@@ -4,29 +4,29 @@ from .models import Employee, ProfessionalSkill, Education, Course, Experience, 
 class AppointmentSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Appointment
-		fields =('date','availability','organization','employee')
+		fields =('id','date','availability','organization','employee')
 
 class ProfessionalSkillSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = ProfessionalSkill
-		fields = ('level','name','category','employee','application')
+		fields = ('id','level','name','category','employee','application')
 
 class EducationSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Education
-		fields = ('level','graduation_status','major',
+		fields = ('id','level','graduation_status','major',
 			'university','start','end','employee','application')
 
 class CourseSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Course
-		fields = ('hours','name','issuing_date','description','institute',
+		fields = ('id','hours','name','issuing_date','description','institute',
 			'employee')
 
 class ExperienceSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Experience
-		fields = ('industry_name','summary','start_date','salary','salary_rate',
+		fields = ('id','industry_name','summary','start_date','salary','salary_rate',
 			'curruncy','job_title','company','months_of_experience','employee')
 
 class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
@@ -37,7 +37,7 @@ class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
 	Experiences = ExperienceSerializer(required=False,many=True)
 	class Meta:
 		model = Employee
-		fields = ('id','first_name', 'middle_name', 'last_name',
+		fields = ('first_name', 'middle_name', 'last_name',
 			'email','password','summary','address','gender',
 			'marital_status','phone','city',
 			'cv','birthday','employment',
@@ -47,7 +47,7 @@ class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
 class SocialLinkSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = SocialLink
-		fields =('facebook','linkedin','twitter','instagram','organization')
+		fields =('id','facebook','linkedin','twitter','instagram','organization')
 
 class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
 	ProfessionalSkills = ProfessionalSkillSerializer(required=False,many=True)
@@ -63,18 +63,18 @@ class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Question
-		fields =('category','question','answer','time','grade','test')
+		fields =('id','category','question','answer','time','grade','test')
 
 class TestSerializer(serializers.HyperlinkedModelSerializer):
 	Questions = QuestionSerializer(required=False,many=True)
 	class Meta:
 		model = Test
-		fields =('category','organization','end','participants', 'Questions')
+		fields =('id','category','organization','end','participants', 'Questions')
 
 class QuestionGradeSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = QuestionGrade
-		fields =('grade','question','participant')
+		fields =('id','grade','question','participant')
 
 class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
 	Appointments = AppointmentSerializer(required=False,many=True)
