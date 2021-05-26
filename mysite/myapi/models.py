@@ -165,7 +165,7 @@ class Question(models.Model):
     category = models.CharField(max_length=256,null=True)
     question = models.CharField(max_length=256,null=True)
     answer = models.JSONField(null=True)
-    time  = models.TimeField(null=True)
+    time  = models.DurationField(null=True)
     grade  = models.DecimalField(max_digits=10, decimal_places=5,null=True)
     test = models.ForeignKey(Test, on_delete=models.CASCADE,null=True)
 
