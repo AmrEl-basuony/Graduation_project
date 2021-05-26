@@ -114,6 +114,7 @@ class SocialLink(models.Model):
 class Application(models.Model):
     name = models.CharField(max_length=256,)
     organization = models.ForeignKey(Organization,to_field='email', on_delete=models.CASCADE,null=True)
+    image = models.ImageField(null=True)
     age_preference = InclusiveIntegerRangeField(null=True)
     role = models.CharField(max_length=256,null=True)
     job_title = models.CharField(max_length=256,null=True)
@@ -130,6 +131,7 @@ class Application(models.Model):
     availability = models.BooleanField(choices=AVAILABILITY,default=True)
     months_of_experience = models.DecimalField(max_digits=10, decimal_places=5,null=True)
     description = models.CharField(max_length=256,null=True)
+    job_requirements = models.CharField(max_length=256,null=True)
     GENDER_PREFERENCE = [
         ('MALE', 'Male'),
         ('FEMALE', 'Female'),
@@ -154,6 +156,7 @@ class Application(models.Model):
 
 class Test(models.Model):
     category = models.CharField(max_length=256,null=True)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE,null=True)
     organization = models.ForeignKey(Organization,to_field='email', on_delete=models.CASCADE,null=True)
     end = models.DateTimeField(null=True)
     participants = models.ManyToManyField(Employee,)
@@ -169,6 +172,7 @@ class Question(models.Model):
 class QuestionGrade(models.Model):
     grade  = models.DecimalField(max_digits=10, decimal_places=5,null=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE,null=True)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE,null=True)
     participant = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)
 
 class Appointment(models.Model):
@@ -178,6 +182,7 @@ class Appointment(models.Model):
         (False, 'Not available'),
     ]
     availability = models.BooleanField(choices=AVAILABILITY,default=True)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE,null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,null=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)
 
