@@ -4,7 +4,7 @@ from .models import Employee, ProfessionalSkill, Education, Course, Experience, 
 class AppointmentSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Appointment
-		fields =('id','date','availability','organization','employee')
+		fields =('id','date','availability','organization','employee','application')
 
 class ProfessionalSkillSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
@@ -37,7 +37,7 @@ class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
 	Experiences = ExperienceSerializer(required=False,many=True)
 	class Meta:
 		model = Employee
-		fields = ('first_name', 'middle_name', 'last_name',
+		fields = ('id','first_name', 'middle_name', 'last_name',
 			'email','password','summary','address','gender',
 			'marital_status','phone','city',
 			'cv','birthday','employment',
@@ -54,7 +54,7 @@ class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
 	Education = EducationSerializer(required=False,many=True)
 	class Meta:
 		model = Application
-		fields =('id','name','organization',
+		fields =('id','name','organization','job_requirements',
 				'age_preference','role','job_title','keyword','phone','start',
 				'end','salary_range','vacant_position','availability',
 				'months_of_experience','description','gender_preference','employment',
@@ -69,12 +69,12 @@ class TestSerializer(serializers.HyperlinkedModelSerializer):
 	Questions = QuestionSerializer(required=False,many=True)
 	class Meta:
 		model = Test
-		fields =('id','category','organization','end','participants', 'Questions')
+		fields =('id','category','application','organization','end','participants', 'Questions')
 
 class QuestionGradeSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = QuestionGrade
-		fields =('id','grade','question','participant')
+		fields =('id','grade','question','participant','test')
 
 class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
 	Appointments = AppointmentSerializer(required=False,many=True)
@@ -83,7 +83,7 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
 	Tests = TestSerializer(required=False,many=True)
 	class Meta:
 		model = Organization
-		fields =('name','email','password',
+		fields =('id','name','email','password',
 				'image','summary','address','phone_code',
 				'phone','founding_date','website','employment',
 				'SocialLinks','Applications','Tests','Appointments')

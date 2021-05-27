@@ -66,22 +66,22 @@ class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all().order_by('organization')
     serializer_class = TestSerializer
     filter_backends=(DjangoFilterBackend,)
-    filter_fields=('category','organization','end','participants')
+    filter_fields=('category','organization','end','participants','application')
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all().order_by('test')
     serializer_class = QuestionSerializer
     filter_backends=(DjangoFilterBackend,)
-    filter_fields=('category','question','answer','time','grade','test')
+    filter_fields=('category','question','time','grade','test')
 
 class QuestionGradeViewSet(viewsets.ModelViewSet):
     queryset = QuestionGrade.objects.all().order_by('participant')
     serializer_class = QuestionGradeSerializer
     filter_backends=(DjangoFilterBackend,)
-    filter_fields=('grade','question','participant')
+    filter_fields=('grade','question','participant','test')
 
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all().order_by('organization')
     serializer_class = AppointmentSerializer
     filter_backends=(DjangoFilterBackend,)
-    filter_fields=('date','availability','organization','employee')
+    filter_fields=('date','availability','organization','employee','application')
