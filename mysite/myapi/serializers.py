@@ -30,19 +30,19 @@ class ExperienceSerializer(serializers.HyperlinkedModelSerializer):
 			'curruncy','job_title','company','months_of_experience','employee')
 
 class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
-	Appointments = AppointmentSerializer(required=False,many=True)
-	ProfessionalSkills = ProfessionalSkillSerializer(required=False,many=True)
-	Education = EducationSerializer(required=False,many=True)
-	Courses = CourseSerializer(required=False,many=True)
-	Experiences = ExperienceSerializer(required=False,many=True)
+	appointments = AppointmentSerializer(required=False,many=True)
+	professionalSkills = ProfessionalSkillSerializer(required=False,many=True)
+	educations = EducationSerializer(required=False,many=True)
+	courses = CourseSerializer(required=False,many=True)
+	experiences = ExperienceSerializer(required=False,many=True)
 	class Meta:
 		model = Employee
 		fields = ('id','first_name', 'middle_name', 'last_name',
 			'email','password','summary','address','gender',
 			'marital_status','phone','city',
 			'cv','birthday','employment',
-			'image','availability','ProfessionalSkills','Education',
-			'Courses','Experiences','Appointments')
+			'image','availability','professionalSkills','educations',
+			'courses','experiences','appointments')
 
 class SocialLinkSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
@@ -50,40 +50,42 @@ class SocialLinkSerializer(serializers.HyperlinkedModelSerializer):
 		fields =('id','facebook','linkedin','twitter','instagram','organization')
 
 class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
-	ProfessionalSkills = ProfessionalSkillSerializer(required=False,many=True)
-	Education = EducationSerializer(required=False,many=True)
+	appointments = AppointmentSerializer(required=False,many=True)
+	professionalskills = ProfessionalSkillSerializer(required=False,many=True)
+	educations = EducationSerializer(required=False,many=True)
 	class Meta:
 		model = Application
 		fields =('id','name','organization','job_requirements',
 				'age_preference','role','job_title','keyword','phone','start',
 				'end','salary_range','vacant_position','availability',
 				'months_of_experience','description','gender_preference','employment',
-				'ProfessionalSkills','Education')
-
-class QuestionSerializer(serializers.HyperlinkedModelSerializer):
-	class Meta:
-		model = Question
-		fields =('id','category','question','answer','time','grade','test')
-
-class TestSerializer(serializers.HyperlinkedModelSerializer):
-	Questions = QuestionSerializer(required=False,many=True)
-	class Meta:
-		model = Test
-		fields =('id','category','application','organization','end','participants', 'Questions')
+				'professionalskills','educations','appointments')
 
 class QuestionGradeSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = QuestionGrade
 		fields =('id','grade','question','participant','test')
 
+class QuestionSerializer(serializers.HyperlinkedModelSerializer):
+	questiongrades = QuestionGradeSerializer(required=False,many=True)
+	class Meta:
+		model = Question
+		fields =('id','category','question','answer','time','grade','test','questiongrades')
+
+class TestSerializer(serializers.HyperlinkedModelSerializer):
+	questions = QuestionSerializer(required=False,many=True)
+	class Meta:
+		model = Test
+		fields =('id','category','application','organization','end','participants', 'questions')
+
 class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
-	Appointments = AppointmentSerializer(required=False,many=True)
-	SocialLinks = SocialLinkSerializer(required=False,many=True)
-	Applications = ApplicationSerializer(required=False,many=True)
-	Tests = TestSerializer(required=False,many=True)
+	appointments = AppointmentSerializer(required=False,many=True)
+	socialLinks = SocialLinkSerializer(required=False,many=True)
+	applications = ApplicationSerializer(required=False,many=True)
+	tests = TestSerializer(required=False,many=True)
 	class Meta:
 		model = Organization
 		fields =('id','name','email','password',
 				'image','summary','address','phone_code',
 				'phone','founding_date','website','employment',
-				'SocialLinks','Applications','Tests','Appointments')
+				'socialLinks','applications','tests','appointments')
