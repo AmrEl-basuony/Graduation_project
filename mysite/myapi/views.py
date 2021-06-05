@@ -59,7 +59,8 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     filter_backends=(DjangoFilterBackend,)
     filter_fields=('id','name','organization',
 				'role','job_title','keyword','phone','start',
-				'end','vacant_position','availability',
+				'end','vacant_position','availability','age_preference_high','age_preference_low',
+				'salary_range_high','salary_range_low',
 				'months_of_experience','description','employment')
 
 class TestViewSet(viewsets.ModelViewSet):

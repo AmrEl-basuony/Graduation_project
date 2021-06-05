@@ -56,8 +56,8 @@ class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Application
 		fields =('id','name','organization','job_requirements',
-				'age_preference','role','job_title','keyword','phone','start',
-				'end','salary_range','vacant_position','availability',
+				'age_preference_high','age_preference_low','role','job_title','keyword','phone','start',
+				'end','salary_range_high','salary_range_low','vacant_position','availability',
 				'months_of_experience','description','gender_preference','employment',
 				'professionalskills','educations','appointments')
 

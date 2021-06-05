@@ -1,5 +1,4 @@
 from django.db import models
-from inclusive_django_range_fields import InclusiveIntegerRangeField
 
 # Create your models here.
 
@@ -114,15 +113,16 @@ class SocialLink(models.Model):
 class Application(models.Model):
     name = models.CharField(max_length=256,)
     organization = models.ForeignKey(Organization,to_field='email', related_name='applications', on_delete=models.CASCADE,null=True)
-    image = models.ImageField(null=True)
-    age_preference = InclusiveIntegerRangeField(null=True)
+    age_preference_low = models.IntegerField(null=True)
+    age_preference_high = models.IntegerField(null=True)
     role = models.CharField(max_length=256,null=True)
     job_title = models.CharField(max_length=256,null=True)
     keyword = models.CharField(max_length=256,null=True)
     phone = models.CharField(max_length=256,null=True)
     start = models.DateField(null=True)
     end = models.DateField(null=True)
-    salary_range = InclusiveIntegerRangeField(null=True,)
+    salary_range_low = models.IntegerField(null=True,)
+    salary_range_high = models.IntegerField(null=True,)
     vacant_position = models.CharField(max_length=256,null=True)
     AVAILABILITY = [
         (True,  'Available'),
