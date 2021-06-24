@@ -1,5 +1,4 @@
 from django.db import models
-from inclusive_django_range_fields import InclusiveIntegerRangeField
 
 # Create your models here.
 
@@ -53,7 +52,7 @@ class Course(models.Model):
     issuing_date = models.DateField(null=True)
     description = models.CharField(max_length=256,null=True)
     institute = models.CharField(max_length=256,null=True)
-    employee = models.ForeignKey(Employee, to_field='email',on_delete=models.CASCADE,null=True)
+    employee = models.ForeignKey(Employee, to_field='email', related_name='courses',on_delete=models.CASCADE,null=True)
 
 class Experience(models.Model):
     industry_name = models.CharField(max_length=256,null=True)
@@ -71,7 +70,7 @@ class Experience(models.Model):
     job_title = models.CharField(max_length=256,null=True)
     company = models.CharField(max_length=256,null=True)
     months_of_experience = models.IntegerField(null=True)
-    employee = models.ForeignKey(Employee, to_field='email',on_delete=models.CASCADE,null=True)    
+    employee = models.ForeignKey(Employee, to_field='email', related_name='experiences',on_delete=models.CASCADE,null=True)    
 
 #Organization and its related models
 
@@ -107,22 +106,23 @@ class SocialLink(models.Model):
     linkedin = models.CharField(max_length=256,null=True)
     twitter = models.CharField(max_length=256,null=True)
     instagram = models.CharField(max_length=256,null=True)
-    organization = models.ForeignKey(Organization,to_field='email', on_delete=models.CASCADE,null=True)
+    organization = models.ForeignKey(Organization,to_field='email',  related_name='socialLinks',on_delete=models.CASCADE,null=True)
 
 #Application and its related models
 
 class Application(models.Model):
     name = models.CharField(max_length=256,)
-    organization = models.ForeignKey(Organization,to_field='email', on_delete=models.CASCADE,null=True)
-    image = models.ImageField(null=True)
-    age_preference = InclusiveIntegerRangeField(null=True)
+    organization = models.ForeignKey(Organization,to_field='email', related_name='applications', on_delete=models.CASCADE,null=True)
+    age_preference_low = models.IntegerField(null=True)
+    age_preference_high = models.IntegerField(null=True)
     role = models.CharField(max_length=256,null=True)
     job_title = models.CharField(max_length=256,null=True)
     keyword = models.CharField(max_length=256,null=True)
     phone = models.CharField(max_length=256,null=True)
     start = models.DateField(null=True)
     end = models.DateField(null=True)
-    salary_range = InclusiveIntegerRangeField(null=True,)
+    salary_range_low = models.IntegerField(null=True,)
+    salary_range_high = models.IntegerField(null=True,)
     vacant_position = models.CharField(max_length=256,null=True)
     AVAILABILITY = [
         (True,  'Available'),
@@ -156,24 +156,24 @@ class Application(models.Model):
 
 class Test(models.Model):
     category = models.CharField(max_length=256,null=True)
-    application = models.ForeignKey(Application, on_delete=models.CASCADE,null=True)
-    organization = models.ForeignKey(Organization,to_field='email', on_delete=models.CASCADE,null=True)
+    application = models.ForeignKey(Application, related_name='tests', on_delete=models.CASCADE,null=True)
+    organization = models.ForeignKey(Organization, related_name='tests',to_field='email', on_delete=models.CASCADE,null=True)
     end = models.DateTimeField(null=True)
-    participants = models.ManyToManyField(Employee,)
+    participants = models.ManyToManyField(Employee,blank=True)
 
 class Question(models.Model):
     category = models.CharField(max_length=256,null=True)
     question = models.CharField(max_length=256,null=True)
-    answer = models.JSONField(null=True)
+    answer = models.CharField(max_length=256,null=True)
     time  = models.DurationField(null=True)
     grade  = models.DecimalField(max_digits=10, decimal_places=5,null=True)
-    test = models.ForeignKey(Test, on_delete=models.CASCADE,null=True)
+    test = models.ForeignKey(Test, related_name='questions', on_delete=models.CASCADE,null=True)
 
 class QuestionGrade(models.Model):
     grade  = models.DecimalField(max_digits=10, decimal_places=5,null=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE,null=True)
+    question = models.ForeignKey(Question, related_name='questiongrades', on_delete=models.CASCADE,null=True)
     test = models.ForeignKey(Test, on_delete=models.CASCADE,null=True)
-    participant = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)
+    participant = models.ForeignKey(Employee, related_name='questiongrades', on_delete=models.CASCADE,null=True)
 
 class Appointment(models.Model):
     date  = models.DateField(null=True)
@@ -182,9 +182,9 @@ class Appointment(models.Model):
         (False, 'Not available'),
     ]
     availability = models.BooleanField(choices=AVAILABILITY,default=True)
-    application = models.ForeignKey(Application, on_delete=models.CASCADE,null=True)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,null=True)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE,null=True)
+    application = models.ForeignKey(Application, related_name='appointments', on_delete=models.CASCADE,null=True)
+    organization = models.ForeignKey(Organization, related_name='appointments', on_delete=models.CASCADE,null=True)
+    employee = models.ForeignKey(Employee, related_name='appointments', on_delete=models.CASCADE,null=True)
 
 #For multi models
 class ProfessionalSkill(models.Model):
@@ -198,8 +198,8 @@ class ProfessionalSkill(models.Model):
     level = models.CharField(max_length=2,choices=LEVEL,default='LO') 
     name = models.CharField(max_length=256,null=True)
     category = models.CharField(max_length=256,null=True)
-    employee = models.ForeignKey(Employee,to_field='email', on_delete=models.CASCADE, null=True)
-    application = models.ForeignKey(Application, on_delete=models.CASCADE ,null=True)
+    employee = models.ForeignKey(Employee, related_name='professionsalskills',to_field='email', on_delete=models.CASCADE, null=True)
+    application = models.ForeignKey(Application, related_name='professionalskills', on_delete=models.CASCADE ,null=True)
 
 class Education(models.Model):
     LEVEL = [
@@ -217,5 +217,5 @@ class Education(models.Model):
     university = models.CharField(max_length=256,null=True)
     start = models.DateField(null=True)
     end = models.DateField(null=True)
-    employee = models.ForeignKey(Employee,to_field='email', on_delete=models.CASCADE, null=True)
-    application = models.ForeignKey(Application, on_delete=models.CASCADE ,null=True)
+    employee = models.ForeignKey(Employee, related_name='educations',to_field='email', on_delete=models.CASCADE, null=True)
+    application = models.ForeignKey(Application, related_name='educations', on_delete=models.CASCADE ,null=True)
